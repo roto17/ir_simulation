@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">852116359728460</string>
+    <string name="fb_login_protocol_scheme">fb852116359728460</string>
+    <string name="facebook_client_token">364982240d6d3838ec212ceafc369dc0</string>
+    <string name="app_name">IrSimulation</string>
+</resources>
