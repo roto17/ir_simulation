@@ -3,7 +3,7 @@ import 'package:ir_simulation/models/detention.dart';
 
 class SimulationIr{
 
-  static int nbrKids = 0;
+  static double nbrKids = 0;
   static double baseSalary = 0;
   static double Taxable = 0;
   static double grossSalary = 0;
@@ -14,6 +14,7 @@ class SimulationIr{
 
 
   static var indemniteLit = [
+    Indemnite(name: "Nombre des enfants", value: 0,isTaxed: false),
     Indemnite(name: "Salaire de Base", value: 20027.9,isTaxed: true),
     Indemnite(name: "Indemnité de transport", value: 500),
     Indemnite(name: "Indemnité de panier", value: 700),
@@ -25,7 +26,8 @@ class SimulationIr{
     Detention(name: "Retenues AMO part salariale", value: 2.26, isPercentage: true, isTaxed: false),
     Detention(name: "Retenues mutuelle", value: 2.51, isPercentage: true, isTaxed: false),
     //Detention(name: "Retenues mutuelle", value: 0, isPercentage: true, isTaxed: false),
-    Detention(name: "Frais professionnels", value: 25, isPercentage: true, isTaxed: false),
+    Detention(name: "CIMR", value: 6, isPercentage: true, isTaxed: false),
+    Detention(name: "Frais professionnels", value: 0, isPercentage: true, isTaxed: false),
     //Detention(name: "Frais professionnels", value: 20, isPercentage: true, isTaxed: false),
   ];
 

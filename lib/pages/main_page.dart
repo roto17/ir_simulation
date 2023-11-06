@@ -26,10 +26,27 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  void _updateSimulation(){
+  void _loadDetentionForUpdate(int pos){
+
     setState(() {
-      SimulationIr.Taxable = SimulationIr.indemniteLit.elementAt(0).value + SimulationIr.indemniteLit.elementAt(3).value;
-      SimulationIr.grossSalary = SimulationIr.Taxable + SimulationIr.indemniteLit.elementAt(1).value + SimulationIr.indemniteLit.elementAt(2).value;
+      detentionDescTextBox.text = SimulationIr.indemniteLit.elementAt(pos).name;
+      detentionValueTextBox.text = SimulationIr.indemniteLit.elementAt(pos).value.toStringAsFixed(0);
+    });
+
+  }
+
+  void _updateSimulation(){
+
+    setState(() {
+      SimulationIr.nbrKids = SimulationIr.indemniteLit.elementAt(0).value;
+      SimulationIr.Taxable = SimulationIr.indemniteLit.elementAt(1).value + SimulationIr.indemniteLit.elementAt(4).value;
+      SimulationIr.grossSalary = SimulationIr.Taxable + SimulationIr.indemniteLit.elementAt(2).value + SimulationIr.indemniteLit.elementAt(3).value;
+
+      if( SimulationIr.Taxable * 12 > 78000 ){
+        SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value = 25;
+      }else{
+        SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value = 35;
+      }
 
       var amountv;
       if( SimulationIr.Taxable >= 6000 ){
@@ -39,11 +56,25 @@ class _MainPageState extends State<MainPage> {
       }
 
       var amountvProFees;
-      if( (SimulationIr.detentionList.elementAt(3).value/100)*SimulationIr.Taxable >= 35000/12 ){
-        amountvProFees = 35000/12;
+
+      if( SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value == 25 ){
+
+        if( (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable >= 35000/12 ){
+          amountvProFees = 35000/12;
+        }else{
+          amountvProFees = (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable;
+        }
+
       }else{
-        amountvProFees = (SimulationIr.detentionList.elementAt(3).value/100)*SimulationIr.Taxable;
+
+        if( (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable >= 30000/12 ){
+          amountvProFees = 30000/12;
+        }else{
+          amountvProFees = (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable;
+        }
+
       }
+
 
       SimulationIr.sNI = SimulationIr.Taxable - ( amountv * (SimulationIr.detentionList.elementAt(0).value/100) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(1).value/100)) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(2).value/100)) + amountvProFees);
 
@@ -75,12 +106,48 @@ class _MainPageState extends State<MainPage> {
       }
 
       SimulationIr.IRBrute =  SimulationIr.sNI * (TauxImpot/100) - Deduction;
-      SimulationIr.IRNet = SimulationIr.IRBrute-(30*SimulationIr.nbrKids);
+      SimulationIr.IRNet = 0;
+      if( SimulationIr.IRBrute > 0 ) {
+        SimulationIr.IRNet =  SimulationIr.IRBrute-(30*SimulationIr.nbrKids);
+      }
+
+
+      double totalCalc = 0;
+      for (var i = 1; i < SimulationIr.detentionList.length-1; i++) {
+        // TO DO
+        totalCalc = totalCalc + (SimulationIr.detentionList.elementAt(i).value/100)*SimulationIr.Taxable;
+      }
+      print(totalCalc);
+      print((SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(1).value/100)) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(2).value/100)));
 
 
       SimulationIr.netSalary = SimulationIr.grossSalary - ( ( amountv * (SimulationIr.detentionList.elementAt(0).value/100) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(1).value/100)) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(2).value/100))) + SimulationIr.IRNet);
 
     });
+
+  }
+
+
+   showModel({required String method,int? pos}){
+    return showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  color: LibColors.lighGrey,
+                  child: Container(
+                    //height:double.maxFinite,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    margin: const EdgeInsets.only(top:80),
+                    child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,addDetention: _addDetention,updateSimulation: _updateSimulation,pos: pos,loadDetentionForUpdate: _loadDetentionForUpdate,),
+                  ),
+                );
+
+              });
+        },
+        isScrollControlled: true
+    );
   }
 
   @override
@@ -129,7 +196,9 @@ class _MainPageState extends State<MainPage> {
                               Row(
                                 children: [
                                   Text("${SimulationIr.indemniteLit.elementAt(index).name} : "),
-                                  Text("${SimulationIr.indemniteLit.elementAt(index).value.toStringAsFixed(2)} DH")
+                                  index > 0?
+                                  Text("${SimulationIr.indemniteLit.elementAt(index).value.toStringAsFixed(2)} DH"):
+                                  Text(SimulationIr.indemniteLit.elementAt(index).value.toStringAsFixed(0)),
                                   /*Text("${indemniteList[index].name} : ",style: const TextStyle(color: Colors.black54,fontSize: 13)),
                                       Text("${indemniteList[index].value.toStringAsFixed(2)} DH",style: const TextStyle(color: Colors.black54,fontSize: 13,fontWeight: FontWeight.bold))
                                       Icon( FontAwesomeIcons.circleDollarToSlot,color: detentionList[index].isTaxed==true?LibColors.lightGoldDollar:Colors.grey, ),
@@ -138,12 +207,13 @@ class _MainPageState extends State<MainPage> {
                               ),
                               Row(
                                 children: [
+                                  index > 0?
                                   Container(
                                     width: 30,
                                     height: 30,
                                     margin: const EdgeInsets.only(left: 3,bottom: 3),
                                     child:  Icon( FontAwesomeIcons.circleDollarToSlot,color: SimulationIr.indemniteLit.elementAt(index).isTaxed==true?LibColors.lightGoldDollar:Colors.grey, ),
-                                  ),
+                                  ):Container(),
                                   Container(
                                     width: 25,
                                     height: 25,
@@ -156,6 +226,7 @@ class _MainPageState extends State<MainPage> {
                                       padding: EdgeInsets.zero,
                                       iconSize: 20,
                                       onPressed: (){
+                                        showModel(method: 'update',pos: index);
                                         print("edit action $index");
                                       }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
                                     ),
@@ -235,7 +306,7 @@ class _MainPageState extends State<MainPage> {
             Container(
               margin: EdgeInsets.only(bottom: 80),
                 color: Colors.red,
-                height: 150,
+                padding: const EdgeInsets.symmetric(vertical: 25),
                 width: double.maxFinite,
                 child: Column(
                   children: [
@@ -258,25 +329,7 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           {
-            showModalBottomSheet<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                 return Container(
-                    color: LibColors.lighGrey,
-                    child: Container(
-                      //height:double.maxFinite,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      margin: const EdgeInsets.only(top:80),
-                      child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,addDetention: _addDetention,updateSimulation: _updateSimulation),
-                      ),
-                    );
-
-                });
-              },
-            isScrollControlled: true
-            );
+            showModel(method: 'add');
           }
           /*setState(()
             detentionList.add( Detention(name: "Indemnité de représentation",value: 20, isPercentage: true, isTaxed: true));

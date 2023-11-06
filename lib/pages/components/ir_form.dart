@@ -1,3 +1,5 @@
+import 'package:ir_simulation/models/simulation_ir.dart';
+
 import 'bottom_sheet_switch.dart';
 import '../../models/detention.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +13,34 @@ class IrForm extends StatefulWidget {
   final detentionValueTextBox ;
   late bool? switchIsPercentage;
   final updateSimulation;
+  final loadDetentionForUpdate;
+  late int? pos;
 
-  IrForm({required this.form,required this.detentionDescTextBox,required this.detentionValueTextBox,required this.switchIsPercentage,required this.addDetention,required this.updateSimulation});
+  IrForm({required this.form,required this.detentionDescTextBox,required this.detentionValueTextBox,required this.switchIsPercentage,required this.addDetention,required this.updateSimulation,this.pos,required this.loadDetentionForUpdate});
 
   @override
   State<IrForm> createState() => _IrFormState();
 }
 
 class _IrFormState extends State<IrForm> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('init state');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.loadDetentionForUpdate(widget.pos);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
+
+
+
     return Form(
       key: widget.form,
       child: Column(
