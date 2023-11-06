@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:ir_simulation/misc/lib_colors.dart';
-import 'package:ir_simulation/models/detention.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
 import 'package:ir_simulation/pages/components/ir_form.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,19 +15,21 @@ class _MainPageState extends State<MainPage> {
   final detentionDescTextBox = TextEditingController();
   final detentionValueTextBox = TextEditingController();
 
+  var attributeListKeys = SimulationIr.attributeList.keys.toList();
+
   final _form = GlobalKey<FormState>();
 
-  void _addDetention(Detention dt){
+  /*void _addDetention(Detention dt){
     setState(() {
       SimulationIr.detentionList.add(dt);
     });
-  }
+  }*/
 
-  void _loadDetentionForUpdate(int pos){
+  void _loadDetentionForUpdate(String keyMap){
 
     setState(() {
-      detentionDescTextBox.text = SimulationIr.indemniteLit.elementAt(pos).name;
-      detentionValueTextBox.text = SimulationIr.indemniteLit.elementAt(pos).value.toStringAsFixed(0);
+      detentionDescTextBox.text = SimulationIr.attributeList[keyMap]!.name;
+      detentionValueTextBox.text = SimulationIr.attributeList[keyMap]!.value.toStringAsFixed(2);
     });
 
   }
@@ -38,46 +37,45 @@ class _MainPageState extends State<MainPage> {
   void _updateSimulation(){
 
     setState(() {
-      SimulationIr.nbrKids = SimulationIr.indemniteLit.elementAt(0).value;
-      SimulationIr.Taxable = SimulationIr.indemniteLit.elementAt(1).value + SimulationIr.indemniteLit.elementAt(4).value;
-      SimulationIr.grossSalary = SimulationIr.Taxable + SimulationIr.indemniteLit.elementAt(2).value + SimulationIr.indemniteLit.elementAt(3).value;
 
-      if( SimulationIr.Taxable * 12 > 78000 ){
-        SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value = 25;
+      SimulationIr.nbrKids = SimulationIr.attributeList['nbrKids']!.value;
+      SimulationIr.imposables = SimulationIr.attributeList['baseSalary']!.value + SimulationIr.attributeList['indemFonction']!.value;
+      SimulationIr.brute = SimulationIr.imposables + SimulationIr.attributeList['indemTransport']!.value + SimulationIr.attributeList['indemPanier']!.value;
+
+      if( SimulationIr.imposables * 12 > 78000 ){
+        SimulationIr.attributeList['fraisProfessionnels']!.value = 25;
       }else{
-        SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value = 35;
+        SimulationIr.attributeList['fraisProfessionnels']!.value = 35;
       }
 
-      var amountv;
-      if( SimulationIr.Taxable >= 6000 ){
+      double amountv = 0;
+      if( SimulationIr.imposables >= 6000 ){
         amountv = 6000;
       }else{
-        amountv = SimulationIr.Taxable;
+        amountv = SimulationIr.imposables;
       }
 
-      var amountvProFees;
+      double amountvProFees = 0;
 
-      if( SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value == 25 ){
+      if( SimulationIr.attributeList['fraisProfessionnels']!.value == 25 ){
 
-        if( (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable >= 35000/12 ){
+        if( (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables >= 35000/12 ){
           amountvProFees = 35000/12;
         }else{
-          amountvProFees = (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable;
+          amountvProFees = (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables;
         }
 
       }else{
 
-        if( (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable >= 30000/12 ){
+        if( (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables >= 30000/12 ){
           amountvProFees = 30000/12;
         }else{
-          amountvProFees = (SimulationIr.detentionList.elementAt(SimulationIr.detentionList.length-1).value/100)*SimulationIr.Taxable;
+          amountvProFees = (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables;
         }
 
       }
 
-
-      SimulationIr.sNI = SimulationIr.Taxable - ( amountv * (SimulationIr.detentionList.elementAt(0).value/100) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(1).value/100)) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(2).value/100)) + amountvProFees);
-
+      SimulationIr.sNI = SimulationIr.imposables - ( amountv * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100)) + SimulationIr.imposables * (SimulationIr.attributeList['cimr']!.value/100) + amountvProFees);
 
       double TauxImpot = 0;
       double Deduction = 0;
@@ -111,24 +109,14 @@ class _MainPageState extends State<MainPage> {
         SimulationIr.IRNet =  SimulationIr.IRBrute-(30*SimulationIr.nbrKids);
       }
 
-
-      double totalCalc = 0;
-      for (var i = 1; i < SimulationIr.detentionList.length-1; i++) {
-        // TO DO
-        totalCalc = totalCalc + (SimulationIr.detentionList.elementAt(i).value/100)*SimulationIr.Taxable;
-      }
-      print(totalCalc);
-      print((SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(1).value/100)) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(2).value/100)));
-
-
-      SimulationIr.netSalary = SimulationIr.grossSalary - ( ( amountv * (SimulationIr.detentionList.elementAt(0).value/100) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(1).value/100)) + (SimulationIr.Taxable * (SimulationIr.detentionList.elementAt(2).value/100))) + SimulationIr.IRNet);
+      SimulationIr.netSalary = SimulationIr.brute - ( ( amountv * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100))) + SimulationIr.IRNet);
 
     });
 
   }
 
 
-   showModel({required String method,int? pos}){
+   showModel({required String method,String? keyMap}){
     return showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
@@ -140,7 +128,7 @@ class _MainPageState extends State<MainPage> {
                     //height:double.maxFinite,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     margin: const EdgeInsets.only(top:80),
-                    child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,addDetention: _addDetention,updateSimulation: _updateSimulation,pos: pos,loadDetentionForUpdate: _loadDetentionForUpdate,),
+                    child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,updateSimulation: _updateSimulation,keyMap: keyMap,loadDetentionForUpdate: _loadDetentionForUpdate,),
                   ),
                 );
 
@@ -179,63 +167,9 @@ class _MainPageState extends State<MainPage> {
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 20,right: 10,left: 10,bottom: 80),
                   children:
-                  List.generate((SimulationIr.indemniteLit.length+SimulationIr.detentionList.length), (index){
+                  List.generate((SimulationIr.attributeList.length), (index){
                     return Column(
                       children: [
-                        index<SimulationIr.indemniteLit.length?Container(
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(14)),
-                              color: Colors.white,
-                              border: Border.all(color: LibColors.darkGrey)
-                          ),
-                          margin: const EdgeInsets.only(bottom: 6),
-                          padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Text("${SimulationIr.indemniteLit.elementAt(index).name} : "),
-                                  index > 0?
-                                  Text("${SimulationIr.indemniteLit.elementAt(index).value.toStringAsFixed(2)} DH"):
-                                  Text(SimulationIr.indemniteLit.elementAt(index).value.toStringAsFixed(0)),
-                                  /*Text("${indemniteList[index].name} : ",style: const TextStyle(color: Colors.black54,fontSize: 13)),
-                                      Text("${indemniteList[index].value.toStringAsFixed(2)} DH",style: const TextStyle(color: Colors.black54,fontSize: 13,fontWeight: FontWeight.bold))
-                                      Icon( FontAwesomeIcons.circleDollarToSlot,color: detentionList[index].isTaxed==true?LibColors.lightGoldDollar:Colors.grey, ),
-                                      */
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  index > 0?
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                    child:  Icon( FontAwesomeIcons.circleDollarToSlot,color: SimulationIr.indemniteLit.elementAt(index).isTaxed==true?LibColors.lightGoldDollar:Colors.grey, ),
-                                  ):Container(),
-                                  Container(
-                                    width: 25,
-                                    height: 25,
-                                    margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                    decoration: BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius: BorderRadius.circular(30)
-                                    ),
-                                    child: IconButton(
-                                      padding: EdgeInsets.zero,
-                                      iconSize: 20,
-                                      onPressed: (){
-                                        showModel(method: 'update',pos: index);
-                                        print("edit action $index");
-                                      }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
-                                    ),
-                                  )],
-                              ),
-                            ],
-                          ),
-                        )
-                        :
                         Container(
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(Radius.circular(14)),
@@ -249,8 +183,15 @@ class _MainPageState extends State<MainPage> {
                             children: [
                               Row(
                                 children: [
-                                  Text("${SimulationIr.detentionList.elementAt(index-SimulationIr.indemniteLit.length).name} : "),
-                                  Text("${SimulationIr.detentionList.elementAt(index-SimulationIr.indemniteLit.length).value.toStringAsFixed(2)} ${SimulationIr.detentionList.elementAt(index-SimulationIr.indemniteLit.length).isPercentage==true?'%':'DH'}"),
+                                  Text("${SimulationIr.attributeList[attributeListKeys[index]]?.name} : "),
+                                  index == 0? Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(0)}"):
+                                  SimulationIr.attributeList[attributeListKeys[index]]?.isPercentage == false?
+                                  Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):
+                                  Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} %"),
+                                  /*Text("${indemniteList[index].name} : ",style: const TextStyle(color: Colors.black54,fontSize: 13)),
+                                      Text("${indemniteList[index].value.toStringAsFixed(2)} DH",style: const TextStyle(color: Colors.black54,fontSize: 13,fontWeight: FontWeight.bold))
+                                      Icon( FontAwesomeIcons.circleDollarToSlot,color: detentionList[index].isTaxed==true?LibColors.lightGoldDollar:Colors.grey, ),
+                                      */
                                 ],
                               ),
                               Row(
@@ -267,33 +208,11 @@ class _MainPageState extends State<MainPage> {
                                       padding: EdgeInsets.zero,
                                       iconSize: 20,
                                       onPressed: (){
-                                        print("edit actions $index");
+                                        showModel(method: 'update',keyMap: attributeListKeys[index]);
+                                        print("edit action $index");
                                       }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
                                     ),
-                                  ),
-                                  SimulationIr.detentionList.elementAt(index-SimulationIr.indemniteLit.length).isLockedDeleting==false?Container(
-                                    width: 25,
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(30)
-                                    ),
-                                    margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                    child: IconButton(
-                                      padding: EdgeInsets.zero,
-                                      iconSize: 20,
-                                      onPressed: (){
-
-                                        setState(() {
-                                          SimulationIr.detentionList.removeAt(index-SimulationIr.indemniteLit.length);
-                                        });
-
-                                        print("delete action $index");
-
-                                      }, icon: const Icon( Icons.delete,color: Colors.white,size: 15, ),
-                                    ),
-                                  ):Container(),
-                                ],
+                                  )],
                               ),
                             ],
                           ),
@@ -310,8 +229,8 @@ class _MainPageState extends State<MainPage> {
                 width: double.maxFinite,
                 child: Column(
                   children: [
-                    Text("Eléments imposables ${SimulationIr.Taxable.toStringAsFixed(2)}"),
-                    Text("Salaire Brut ${SimulationIr.grossSalary.toStringAsFixed(2)}"),
+                    Text("Eléments imposables ${SimulationIr.imposables.toStringAsFixed(2)}"),
+                    Text("Salaire Brut ${SimulationIr.brute.toStringAsFixed(2)}"),
                     Text("Salaire net imposable (SNI) ${SimulationIr.sNI.toStringAsFixed(2)}"),
                     Text("IR Brute ${SimulationIr.IRBrute.toStringAsFixed(2)}"),
                     Text("IR net ${SimulationIr.IRNet.toStringAsFixed(2)}"),

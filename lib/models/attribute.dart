@@ -1,10 +1,11 @@
-class Indemnite{
+class Attribute{
   String name;
   double value;
-  bool isTaxed;
-  Indemnite({
+  bool isPercentage;
+
+  Attribute({
     required this.name,
     required this.value,
-    this.isTaxed = false
+    this.isPercentage = false
   });
 }

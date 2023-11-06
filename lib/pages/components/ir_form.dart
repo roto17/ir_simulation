@@ -8,15 +8,16 @@ import 'package:flutter/material.dart';
 class IrForm extends StatefulWidget {
 
   final form;
-  final addDetention;
+  //final addDetention;
   final detentionDescTextBox ;
   final detentionValueTextBox ;
   late bool? switchIsPercentage;
   final updateSimulation;
   final loadDetentionForUpdate;
   late int? pos;
+  late String? keyMap;
 
-  IrForm({required this.form,required this.detentionDescTextBox,required this.detentionValueTextBox,required this.switchIsPercentage,required this.addDetention,required this.updateSimulation,this.pos,required this.loadDetentionForUpdate});
+  IrForm({required this.form,required this.detentionDescTextBox,required this.detentionValueTextBox,required this.switchIsPercentage,required this.updateSimulation,required this.keyMap,this.loadDetentionForUpdate});
 
   @override
   State<IrForm> createState() => _IrFormState();
@@ -30,7 +31,7 @@ class _IrFormState extends State<IrForm> {
     super.initState();
     print('init state');
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.loadDetentionForUpdate(widget.pos);
+      widget.loadDetentionForUpdate(widget.keyMap);
     });
   }
 
