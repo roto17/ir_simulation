@@ -1,5 +1,4 @@
 import 'package:ir_simulation/models/attribute.dart';
-import 'package:ir_simulation/models/detention.dart';
 
 class SimulationIr{
 

@@ -1,4 +1,4 @@
-package com.example.ir_simulation
+package com.overthinker.irsimulation
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ir_simulation/misc/lib_colors.dart';
+import 'package:ir_simulation/models/attribute.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
 import 'package:ir_simulation/pages/components/ir_form.dart';
 
@@ -19,11 +20,12 @@ class _MainPageState extends State<MainPage> {
 
   final _form = GlobalKey<FormState>();
 
-  /*void _addDetention(Detention dt){
+  void _updateAttribute(Attribute attr,String keyMap){
     setState(() {
-      SimulationIr.detentionList.add(dt);
+      SimulationIr.attributeList[keyMap]!.value = attr.value;
+      SimulationIr.attributeList[keyMap]!.name = attr.name;
     });
-  }*/
+  }
 
   void _loadDetentionForUpdate(String keyMap){
 
@@ -38,7 +40,6 @@ class _MainPageState extends State<MainPage> {
 
     setState(() {
 
-      SimulationIr.nbrKids = SimulationIr.attributeList['nbrKids']!.value;
       SimulationIr.imposables = SimulationIr.attributeList['baseSalary']!.value + SimulationIr.attributeList['indemFonction']!.value;
       SimulationIr.brute = SimulationIr.imposables + SimulationIr.attributeList['indemTransport']!.value + SimulationIr.attributeList['indemPanier']!.value;
 
@@ -46,13 +47,6 @@ class _MainPageState extends State<MainPage> {
         SimulationIr.attributeList['fraisProfessionnels']!.value = 25;
       }else{
         SimulationIr.attributeList['fraisProfessionnels']!.value = 35;
-      }
-
-      double amountv = 0;
-      if( SimulationIr.imposables >= 6000 ){
-        amountv = 6000;
-      }else{
-        amountv = SimulationIr.imposables;
       }
 
       double amountvProFees = 0;
@@ -75,7 +69,14 @@ class _MainPageState extends State<MainPage> {
 
       }
 
-      SimulationIr.sNI = SimulationIr.imposables - ( amountv * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100)) + SimulationIr.imposables * (SimulationIr.attributeList['cimr']!.value/100) + amountvProFees);
+      double adjustedAmountForCnss = 0;
+      if( SimulationIr.imposables >= 6000 ){
+        adjustedAmountForCnss = 6000;
+      }else{
+        adjustedAmountForCnss = SimulationIr.imposables;
+      }
+
+      SimulationIr.sNI = SimulationIr.imposables - ( adjustedAmountForCnss * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100)) + SimulationIr.imposables * (SimulationIr.attributeList['cimr']!.value/100) + amountvProFees);
 
       double TauxImpot = 0;
       double Deduction = 0;
@@ -106,15 +107,14 @@ class _MainPageState extends State<MainPage> {
       SimulationIr.IRBrute =  SimulationIr.sNI * (TauxImpot/100) - Deduction;
       SimulationIr.IRNet = 0;
       if( SimulationIr.IRBrute > 0 ) {
-        SimulationIr.IRNet =  SimulationIr.IRBrute-(30*SimulationIr.nbrKids);
+        SimulationIr.IRNet =  SimulationIr.IRBrute-(30*SimulationIr.attributeList['nbrKids']!.value);
       }
 
-      SimulationIr.netSalary = SimulationIr.brute - ( ( amountv * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100))) + SimulationIr.IRNet);
+      SimulationIr.netSalary = SimulationIr.brute - ( ( adjustedAmountForCnss * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100))) + SimulationIr.IRNet);
 
     });
 
   }
-
 
    showModel({required String method,String? keyMap}){
     return showModalBottomSheet<void>(
@@ -128,13 +128,45 @@ class _MainPageState extends State<MainPage> {
                     //height:double.maxFinite,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     margin: const EdgeInsets.only(top:80),
-                    child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,updateSimulation: _updateSimulation,keyMap: keyMap,loadDetentionForUpdate: _loadDetentionForUpdate,),
+                    child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,updateSimulation: _updateSimulation,keyMap: keyMap,loadDetentionForUpdate: _loadDetentionForUpdate,showDialog: _showMyDialog,updateAttribute: _updateAttribute,),
                   ),
                 );
 
               });
         },
         isScrollControlled: true
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Results'),
+          content:  SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Eléments imposables ${SimulationIr.imposables.toStringAsFixed(2)}"),
+                Text("Salaire Brut ${SimulationIr.brute.toStringAsFixed(2)}"),
+                Text("Salaire net imposable (SNI) ${SimulationIr.sNI.toStringAsFixed(2)}"),
+                Text("IR Brute ${SimulationIr.IRBrute.toStringAsFixed(2)}"),
+                Text("IR net ${SimulationIr.IRNet.toStringAsFixed(2)}"),
+                Text("Net Salary ${SimulationIr.netSalary.toStringAsFixed(2)}"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Okey'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -188,10 +220,6 @@ class _MainPageState extends State<MainPage> {
                                   SimulationIr.attributeList[attributeListKeys[index]]?.isPercentage == false?
                                   Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):
                                   Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} %"),
-                                  /*Text("${indemniteList[index].name} : ",style: const TextStyle(color: Colors.black54,fontSize: 13)),
-                                      Text("${indemniteList[index].value.toStringAsFixed(2)} DH",style: const TextStyle(color: Colors.black54,fontSize: 13,fontWeight: FontWeight.bold))
-                                      Icon( FontAwesomeIcons.circleDollarToSlot,color: detentionList[index].isTaxed==true?LibColors.lightGoldDollar:Colors.grey, ),
-                                      */
                                 ],
                               ),
                               Row(
@@ -222,7 +250,7 @@ class _MainPageState extends State<MainPage> {
                   }),
                 ),
             ),
-            Container(
+            /*Container(
               margin: EdgeInsets.only(bottom: 80),
                 color: Colors.red,
                 padding: const EdgeInsets.symmetric(vertical: 25),
@@ -236,28 +264,9 @@ class _MainPageState extends State<MainPage> {
                     Text("IR net ${SimulationIr.IRNet.toStringAsFixed(2)}"),
                     Text("Net Salary ${SimulationIr.netSalary.toStringAsFixed(2)}"),
                   ],
-                )),
+                )),*/
           ],
         ),
-      ),
-      /*bottomNavigationBar: BottomAppBar(
-        color: Colors.blue,
-        shape: const CircularNotchedRectangle(),
-        child: Container(height: 50.0,),
-      ),*/
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          {
-            showModel(method: 'add');
-          }
-          /*setState(()
-            detentionList.add( Detention(name: "Indemnité de représentation",value: 20, isPercentage: true, isTaxed: true));
-          });*/
-        },
-        shape: const CircleBorder(),
-        backgroundColor: Colors.blue,
-        tooltip: 'Increment Counter',
-        child: const Icon(Icons.add,color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

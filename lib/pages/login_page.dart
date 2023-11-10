@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     }, child: const Wrap(
                       children: [
-                        Icon(FontAwesomeIcons.facebook,color: Colors.white,size: 18,)
+                        Icon(FontAwesomeIcons.github,color: Colors.white,size: 18,)
                         ],
                       )
                     ),

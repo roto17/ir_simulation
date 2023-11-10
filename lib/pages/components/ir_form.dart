@@ -1,23 +1,22 @@
-import 'package:ir_simulation/models/simulation_ir.dart';
-
 import 'bottom_sheet_switch.dart';
-import '../../models/detention.dart';
 import 'package:flutter/material.dart';
+import 'package:ir_simulation/models/simulation_ir.dart';
 
 //ignore: must_be_immutable
 class IrForm extends StatefulWidget {
 
   final form;
-  //final addDetention;
-  final detentionDescTextBox ;
-  final detentionValueTextBox ;
+  final showDialog;
+  final updateAttribute;
+  final TextEditingController detentionDescTextBox ;
+  final TextEditingController detentionValueTextBox ;
   late bool? switchIsPercentage;
   final updateSimulation;
   final loadDetentionForUpdate;
   late int? pos;
   late String? keyMap;
 
-  IrForm({required this.form,required this.detentionDescTextBox,required this.detentionValueTextBox,required this.switchIsPercentage,required this.updateSimulation,required this.keyMap,this.loadDetentionForUpdate});
+  IrForm({required this.form,required this.detentionDescTextBox,required this.detentionValueTextBox,required this.switchIsPercentage,required this.updateSimulation,required this.keyMap,this.loadDetentionForUpdate,this.showDialog,this.updateAttribute});
 
   @override
   State<IrForm> createState() => _IrFormState();
@@ -37,16 +36,9 @@ class _IrFormState extends State<IrForm> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
-
-
     return Form(
       key: widget.form,
       child: Column(
-        //mainAxisAlignment: MainAxisAlignment.center,
-        //mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,7 +58,6 @@ class _IrFormState extends State<IrForm> {
                   },
                   controller: widget.detentionDescTextBox,
                   decoration:  const InputDecoration(
-                    //errorText: _errorText(txtEditingController: detentionDescTextBox,isNumber: false),
                     border:   UnderlineInputBorder(
                         borderSide: BorderSide( color: Colors.blue )
                     ),
@@ -79,16 +70,6 @@ class _IrFormState extends State<IrForm> {
                   ),
                 ),
               ),
-              /*BottomSheetSwitch(
-                                        switchValue: _switchIsTaxed,
-                                        valueChanged: (value) {
-
-                                          setState(() {
-                                            _switchIsTaxed = value;
-                                          });
-
-                                        },
-                                      )*/
             ],
           ),
           Row(
@@ -120,7 +101,6 @@ class _IrFormState extends State<IrForm> {
                   onChanged: (_) => setState(() {}),
                   controller: widget.detentionValueTextBox,
                   decoration:  InputDecoration(
-                    //errorText: _errorText(txtEditingController: detentionValueTextBox,isPercentage: widget.switchIsPercentage,isNumber: true),
                       border: const UnderlineInputBorder(
                           borderSide: BorderSide( color: Colors.blue )
                       ),
@@ -148,13 +128,17 @@ class _IrFormState extends State<IrForm> {
             child: Row(
               children: [
                 ElevatedButton(
-                  child: const Text('Add Detentions'),
+                  child: const Text('Save'),
                   onPressed: () {
                     if( widget.form.currentState!.validate() ){
 
-                      //widget.addDetention(Detention(name: widget.detentionDescTextBox.text, value: double.parse(widget.detentionValueTextBox.text.replaceAll(',', '.')), isPercentage: widget.switchIsPercentage!, isTaxed: false,isLockedDeleting: false));
+                      var attributeToUpdate = SimulationIr.attributeList[ widget.keyMap ];
+                      attributeToUpdate!.name = widget.detentionDescTextBox.text;
+                      attributeToUpdate!.value = double.parse(widget.detentionValueTextBox.text);
+                      widget.updateAttribute(attributeToUpdate,widget.keyMap);
                       widget.updateSimulation();
                       Navigator.pop(context);
+                      widget.showDialog();
 
                     }
                   },
