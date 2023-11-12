@@ -1,14 +1,25 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ir_simulation/cubit/app_cubit_states.dart';
+import 'package:ir_simulation/cubit/app_cubits.dart';
 import 'package:ir_simulation/misc/lib_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:ir_simulation/pages/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
+
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   var mapImagesTitles = {
     "img1.jpg":"Simulate Your IR",
@@ -19,6 +30,11 @@ class _WelcomePageState extends State<WelcomePage> {
     "img1.jpg":LibColors.lightSkin,
     "img2.jpg":LibColors.lightRed
   };
+
+  Future<String> getStringFromLocalStorage(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key) ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +93,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                 color: Colors.white,
                                 tooltip: 'Enter The APP',
                                 onPressed: () {
-                                  //print("ok");
+                                  BlocProvider.of<AppCubits>(context).goToLogin();
                                 },
                               ),
                             ),

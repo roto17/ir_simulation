@@ -1,18 +1,20 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:ir_simulation/cubit/app_cubit_logics.dart';
+import 'package:ir_simulation/cubit/app_cubits.dart';
 import 'package:ir_simulation/pages/login_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ir_simulation/pages/main_page.dart';
-import 'package:ir_simulation/pages/welcome_page.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'firebase_options.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:ir_simulation/pages/welcome_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // This is the last thing you need to add.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   runApp(const MyApp());
 }
 
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -46,7 +49,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: BlocProvider<AppCubits>(create:(context)=> AppCubits(),child: const AppCubitLogics(),),
     );
   }
 }

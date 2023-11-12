@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ir_simulation/cubit/app_cubits.dart';
 import 'package:ir_simulation/misc/lib_colors.dart';
 import 'package:ir_simulation/models/attribute.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
 import 'package:ir_simulation/pages/components/ir_form.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class MainPage extends StatefulWidget {
+
   const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
+
 }
 class _MainPageState extends State<MainPage> {
 
@@ -19,6 +26,14 @@ class _MainPageState extends State<MainPage> {
   var attributeListKeys = SimulationIr.attributeList.keys.toList();
 
   final _form = GlobalKey<FormState>();
+
+  Future<void> logout() async{
+
+    await GoogleSignIn().signOut();
+    await FacebookAuth.instance.logOut();
+    FirebaseAuth.instance.signOut();
+
+  }
 
   void _updateAttribute(Attribute attr,String keyMap){
     setState(() {
@@ -182,7 +197,9 @@ class _MainPageState extends State<MainPage> {
               color: Colors.white,
             ),
             onPressed: () {
-              print("Log out");
+              BlocProvider.of<AppCubits>(context).goToLogin();
+              logout();
+              //print("Log out");
             },
           )
         ],

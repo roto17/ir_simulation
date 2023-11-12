@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:ir_simulation/misc/lib_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ir_simulation/pages/main_page.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:twitter_login/twitter_login.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../cubit/app_cubits.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +20,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  @override
+  void initState() {
+    //print(globals.sharedPreferences?.getString('email'));
+
+    super.initState();
+  }
 
   final RoundedLoadingButtonController googleController = RoundedLoadingButtonController();
   final RoundedLoadingButtonController gitController = RoundedLoadingButtonController();
@@ -188,6 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {
                           user = usercred!.user;
                         });
+                        BlocProvider.of<AppCubits>(context).goToMain();
                       }
                     }, child: const Wrap(
                       children: [
@@ -261,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                     )
                     ),
                   ),
-                  Container(
+                 /* Container(
                     width: 60,
                     margin: const EdgeInsets.only(
                         bottom: 10
@@ -297,7 +309,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     )
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
