@@ -3,11 +3,13 @@ import 'package:ir_simulation/cubit/app_cubits.dart';
 import 'package:ir_simulation/pages/login_page.dart';
 import 'package:ir_simulation/pages/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ir_simulation/pages/welcome_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ir_simulation/pages/globals.dart' as globals;
 
 Future<void> main() async{
 
@@ -15,6 +17,10 @@ Future<void> main() async{
 
   // This is the last thing you need to add.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  globals.sharedPreferences = await SharedPreferences.getInstance();
+  globals.sharedPreferences!.setString('email', '');
+
   runApp(const MyApp());
 }
 
@@ -49,6 +55,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+
       home: BlocProvider<AppCubits>(create:(context)=> AppCubits(),child: const AppCubitLogics(),),
     );
   }

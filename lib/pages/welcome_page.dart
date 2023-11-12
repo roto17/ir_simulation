@@ -5,6 +5,7 @@ import 'package:ir_simulation/misc/lib_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:ir_simulation/pages/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ir_simulation/pages/globals.dart' as globals;
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -93,6 +94,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                 color: Colors.white,
                                 tooltip: 'Enter The APP',
                                 onPressed: () {
+                                  globals.sharedPreferences!.setBool('visitedWelcomePage', true);
                                   BlocProvider.of<AppCubits>(context).goToLogin();
                                 },
                               ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:ir_simulation/misc/lib_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:twitter_login/twitter_login.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:ir_simulation/pages/main_page.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:twitter_login/twitter_login.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ir_simulation/pages/globals.dart' as globals;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../cubit/app_cubits.dart';
 
@@ -40,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     redirectUrl: LibData.redirectUrlGit,
     title: LibData.titleGit,
     centerTitle: LibData.centerTitleGit,
+    scope: 'user:email'
   );
 
   User? user;
@@ -66,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Future<UserCredential?> signInWithGithub(BuildContext context) async {
+
     var result = await gitHubSignIn.signIn(context);
     switch (result.status) {
       case GitHubSignInResultStatus.ok:
@@ -112,6 +114,20 @@ class _LoginPageState extends State<LoginPage> {
    //final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential('EAAMbYeOWX88BO1TJON1i2TngWHEE1v6CXVtSPPklQZCBPmQesioXZBu7FGDjainy1ZASqNr0ZCMrmT0ATYUKwr3xW8LEAsxUXczEagYvqpc8OJWegaZBYrQr2olGKbZC8qLDhBFkz5nxVnvIuZARw3YC17GHuOB4cpwe9pOsDs5fWtEhY9936jbdn1e3JWjUBl6mtLAR5jAH5jrkn3QEWi7S4oJ1UDZCdRs5Eu2aXuPrnOvZBhNVE3ZCOKnNe542RW8KfitbamggZDZD');
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
+
+  String? getEmailFromServerResponseUser(){
+
+    if( this.user?.email != null ){
+      return this.user?.email!;
+    }
+
+    if( this.user?.providerData[0].email! != null ){
+      return this.user?.providerData[0].email!;
+    }
+
+    return null;
+
   }
 
   Future<void> logout() async{
@@ -199,43 +215,12 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {
                           user = usercred!.user;
                         });
+                        globals.sharedPreferences!.setString('email', '${getEmailFromServerResponseUser()}');
                         BlocProvider.of<AppCubits>(context).goToMain();
                       }
                     }, child: const Wrap(
-                      children: [
-                        Icon(FontAwesomeIcons.google,color: Colors.white,size: 18,)
-                      ],
-                    )
-                    ),
-                  ),
-                  Container(
-                    width: 60,
-                    margin: const EdgeInsets.only(
-                        bottom: 10,
-                        right: 8
-                    ),
-                    child: RoundedLoadingButton(
-                      successColor: Colors.green,
-                      color: Colors.black45,
-                      controller: gitController,onPressed: () async {
-                      UserCredential? usercred;
-                      try {
-                        usercred = await signInWithGithub(context);
-                      }catch(e){
-                        print(e);
-                        gitController.reset();
-                      }
-                      if(usercred!.user != null)
-                      {
-                        gitController.success();
-                        setState(() {
-                          user = usercred!.user;
-                        });
-                      }
-
-                    }, child: const Wrap(
-                      children: [
-                        Icon(FontAwesomeIcons.github,color: Colors.white,size: 18,)
+                        children: [
+                          Icon(FontAwesomeIcons.google,color: Colors.white,size: 18,)
                         ],
                       )
                     ),
@@ -264,11 +249,47 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {
                           user = usercred!.user;
                         });
+                        globals.sharedPreferences!.setString('email', '${getEmailFromServerResponseUser()}');
+                        BlocProvider.of<AppCubits>(context).goToMain();
                       }
 
                     }, child: const Wrap(
                       children: [
                         Icon( FontAwesomeIcons.twitter,color: Colors.white,size: 18, )
+                      ],
+                    )
+                    ),
+                  ),
+                  Container(
+                    width: 60,
+                    margin: const EdgeInsets.only(
+                        bottom: 10,
+                        right: 8
+                    ),
+                    child: RoundedLoadingButton(
+                        successColor: Colors.green,
+                        color: Colors.black45,
+                        controller: gitController,onPressed: () async {
+                      UserCredential? usercred;
+                      try {
+                        usercred = await signInWithGithub(context);
+                      }catch(e){
+                        print(e);
+                        gitController.reset();
+                      }
+                      if(usercred!.user != null)
+                      {
+                        gitController.success();
+                        setState(() {
+                          user = usercred!.user;
+                        });
+                        globals.sharedPreferences!.setString('email', '${getEmailFromServerResponseUser()}');
+                        BlocProvider.of<AppCubits>(context).goToMain();
+                      }
+
+                    }, child: const Wrap(
+                      children: [
+                        Icon(FontAwesomeIcons.github,color: Colors.white,size: 18,)
                       ],
                     )
                     ),
@@ -314,12 +335,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            IconButton(
+            /*IconButton(
                 color: Colors.red,
                 onPressed: () async{
-                  logout();
+                  print(this.user!.providerData[0].email);
                 }, icon: const Icon(Icons.ac_unit) ),
-            Text(user?.email==null?"Not logged in":"${user?.email}"),
+            Text(user?.email==null?"Not logged in":"${user?.email}"),*/
 
           ],
         ),

@@ -1,18 +1,29 @@
 import 'package:bloc/bloc.dart';
 import 'package:ir_simulation/cubit/app_cubit_states.dart';
+import 'package:ir_simulation/pages/globals.dart' as globals;
 
 class AppCubits extends Cubit<CubitStates>{
   AppCubits():super(InitialState()){
 
-  emit(WelcomeState());
+     if(globals.sharedPreferences!.getBool('visitedWelcomePage') == true){
+       emit(LoginState());
+     }else{
+       emit(WelcomeState());
+     }
 
   }
 
   void goToLogin(){
 
+    print('roto17');
+    print(globals.sharedPreferences!.getString('email') );
     emit(LoadingState());
 
-    emit(LoginState());
+    if(globals.sharedPreferences!.getString('email') != ''){
+      emit(MainState());
+    }else{
+      emit(LoginState());
+    }
 
   }
 

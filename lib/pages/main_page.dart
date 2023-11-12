@@ -8,6 +8,7 @@ import 'package:ir_simulation/models/attribute.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
 import 'package:ir_simulation/pages/components/ir_form.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:ir_simulation/pages/globals.dart' as globals;
 
 class MainPage extends StatefulWidget {
 
@@ -19,7 +20,7 @@ class MainPage extends StatefulWidget {
 }
 class _MainPageState extends State<MainPage> {
 
-  final bool _switchIsPercentage = true;
+  var   _switchIsPercentage ;
   final detentionDescTextBox = TextEditingController();
   final detentionValueTextBox = TextEditingController();
 
@@ -45,8 +46,13 @@ class _MainPageState extends State<MainPage> {
   void _loadDetentionForUpdate(String keyMap){
 
     setState(() {
+      if(keyMap == 'nbrKids'){
+        detentionValueTextBox.text = SimulationIr.attributeList[keyMap]!.value.toStringAsFixed(0);
+      }else{
+        detentionValueTextBox.text = SimulationIr.attributeList[keyMap]!.value.toStringAsFixed(2);
+      }
       detentionDescTextBox.text = SimulationIr.attributeList[keyMap]!.name;
-      detentionValueTextBox.text = SimulationIr.attributeList[keyMap]!.value.toStringAsFixed(2);
+      _switchIsPercentage = SimulationIr.attributeList[keyMap]!.isPercentage;
     });
 
   }
@@ -197,13 +203,14 @@ class _MainPageState extends State<MainPage> {
               color: Colors.white,
             ),
             onPressed: () {
-              BlocProvider.of<AppCubits>(context).goToLogin();
               logout();
+              globals.sharedPreferences!.setString('email', '');
+              BlocProvider.of<AppCubits>(context).goToLogin();
               //print("Log out");
             },
           )
         ],
-        title: const Text('IR Simulation',style: TextStyle(color: Colors.white),),
+        title:  Text("Bonjour ${globals.sharedPreferences!.getString('email')}",style: TextStyle(color: Colors.white,fontSize: 15),),
         backgroundColor: Colors.blue,
       ),
       body: Container(
@@ -241,7 +248,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                               Row(
                                 children: [
-                                  Container(
+                                  SimulationIr.attributeList[attributeListKeys[index]]?.isLockedEditing == false? Container(
                                     width: 25,
                                     height: 25,
                                     margin: const EdgeInsets.only(left: 3,bottom: 3),
@@ -257,7 +264,7 @@ class _MainPageState extends State<MainPage> {
                                         print("edit action $index");
                                       }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
                                     ),
-                                  )],
+                                  ):Container()],
                               ),
                             ],
                           ),

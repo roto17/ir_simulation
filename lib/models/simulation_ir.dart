@@ -18,10 +18,10 @@ class SimulationIr{
     'indemTransport'      :  Attribute(name: 'Indemnité de transport', value: 500,isPercentage: false),
     'indemPanier'         :  Attribute(name: 'Indemnité de panier', value: 700,isPercentage: false),
     'indemFonction'       :  Attribute(name: 'Indemnité de fonction', value: 0,isPercentage: false),
-    'retenuesCNSS'        :  Attribute(name: "Retenues CNSS part salariale", value: 4.48, isPercentage: true),
-    'retenuesAMO'         :  Attribute(name: "Retenues AMO part salariale", value: 2.26, isPercentage: true),
+    'retenuesCNSS'        :  Attribute(name: "Retenues CNSS part salariale", value: 4.48, isPercentage: true,isLockedEditing: true),
+    'retenuesAMO'         :  Attribute(name: "Retenues AMO part salariale", value: 2.26, isPercentage: true,isLockedEditing: true),
     'retenuesMutuelle'    :  Attribute(name: "Retenues mutuelle", value: 2.51, isPercentage: true),
-    'fraisProfessionnels' :  Attribute(name: "Frais professionnels", value: 0, isPercentage: true),
+    'fraisProfessionnels' :  Attribute(name: "Frais professionnels", value: 0, isPercentage: true,isLockedEditing: true),
     'cimr'                :  Attribute(name: "CIMR", value: 0, isPercentage: true),
   };
 

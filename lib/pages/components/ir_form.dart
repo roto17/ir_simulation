@@ -28,7 +28,6 @@ class _IrFormState extends State<IrForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('init state');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.loadDetentionForUpdate(widget.keyMap);
     });
@@ -47,6 +46,7 @@ class _IrFormState extends State<IrForm> {
                 height: 85,
                 width: 300,
                 child: TextFormField(
+                  keyboardType: TextInputType.text,
                   onChanged: (_)  {
                     setState(() {});
                   },
@@ -79,9 +79,14 @@ class _IrFormState extends State<IrForm> {
                 height: 85,
                 width: 300,
                 child: TextFormField(
+                  keyboardType: TextInputType.number,
                   validator: (value){
 
                     var textUpdatedComma = value!.replaceAll(',', '.');
+
+                    if(value.contains('.') && widget.keyMap == 'nbrKids'){
+                      return 'Invalide comme nombre des enfants';
+                    }
 
                     if (value.isEmpty){
                       return 'Can\'t be empty';
@@ -107,20 +112,20 @@ class _IrFormState extends State<IrForm> {
                       focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
-                      labelText: widget.switchIsPercentage==true?'Value in %':'Value in MAD',
+                      labelText: widget.keyMap =='nbrKids'?'Nombre':widget.switchIsPercentage==true?'Value in %':'Value in MAD',
                       labelStyle: const TextStyle(color: Colors.grey),
                       floatingLabelBehavior: FloatingLabelBehavior.never
                   ),
                 ),
               ),
-              BottomSheetSwitch(
+              /*BottomSheetSwitch(
                 switchValue: widget.switchIsPercentage!,
                 valueChanged: (value) {
                   setState(() {
                     widget.switchIsPercentage = value;
                   });
                 },
-              )
+              )*/
             ],
           ),
           Container(
