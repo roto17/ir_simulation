@@ -19,7 +19,7 @@ Future<void> main() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   globals.sharedPreferences = await SharedPreferences.getInstance();
-  globals.sharedPreferences!.setString('email', '');
+  //globals.sharedPreferences!.setString('email', '');
 
   runApp(const MyApp());
 }

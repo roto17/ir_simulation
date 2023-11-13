@@ -7,8 +7,8 @@ import 'package:ir_simulation/misc/lib_colors.dart';
 import 'package:ir_simulation/models/attribute.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
 import 'package:ir_simulation/pages/components/ir_form.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:ir_simulation/pages/globals.dart' as globals;
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -18,6 +18,7 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 
 }
+
 class _MainPageState extends State<MainPage> {
 
   var   _switchIsPercentage ;
@@ -146,9 +147,8 @@ class _MainPageState extends State<MainPage> {
                 return Container(
                   color: LibColors.lighGrey,
                   child: Container(
-                    //height:double.maxFinite,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     margin: const EdgeInsets.only(top:80),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child:  IrForm(form: _form,detentionDescTextBox:detentionDescTextBox,detentionValueTextBox: detentionValueTextBox,switchIsPercentage: _switchIsPercentage,updateSimulation: _updateSimulation,keyMap: keyMap,loadDetentionForUpdate: _loadDetentionForUpdate,showDialog: _showMyDialog,updateAttribute: _updateAttribute,),
                   ),
                 );
