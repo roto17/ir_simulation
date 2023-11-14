@@ -1,4 +1,7 @@
 {
-    "hello": "Bonjour cv ?",
-    "login": "Authentication"
+    "welcometitle1":"Simuler votre IR",
+    "welcometitle2":"Tester c'est gratuit",
+     "loginTitle": "Authentification Sociale",
+     "loginMSG" :"Identifiez vous en utilisant un de vos comptes\nSi vous rencontrez un problème\nMerci de contacter zerouali.khalid2@gmail.com",
+    "hello": "Bonjour cv ?"
  }

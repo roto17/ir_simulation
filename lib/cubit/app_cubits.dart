@@ -5,7 +5,7 @@ import 'package:ir_simulation/pages/globals.dart' as globals;
 class AppCubits extends Cubit<CubitStates>{
   AppCubits():super(InitialState()){
 
-    if( globals.sharedPreferences!.getString( 'email' ) != '' && globals.sharedPreferences!.getString( 'email' ) != null ){
+    if( globals.sharedPreferences!.getString( 'email' ) != '' && globals.sharedPreferences!.getString( 'email' ) != null && globals.sharedPreferences!.getString( 'email' ) != 'null' ){
       emit( MainState() );
     }else if( globals.sharedPreferences!.getBool('visitedWelcomePage') == true ){
        emit( LoginState() );

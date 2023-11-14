@@ -12,5 +12,6 @@ class LibColors {
   static const Color lighGrey = Color(0xFFf5f5f5);
   static const Color darkGrey = Color(0xFFebebeb);
   static const Color lightGoldDollar = Color(0xFFffd452);
+  static const Color DarkBrownWelcomePage = Color(0xFF9f6c5b);
 
 }

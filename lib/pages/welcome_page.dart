@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ir_simulation/cubit/app_cubit_states.dart';
 import 'package:ir_simulation/cubit/app_cubits.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:ir_simulation/pages/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ir_simulation/pages/globals.dart' as globals;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -23,13 +25,18 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   var mapImagesTitles = {
-    "img1.jpg":"Simulate Your IR",
-    "img2.jpg":"It's for FREE"
+    "img1.jpg":"welcometitle1",
+    "img2.jpg":"welcometitle2"
+  };
+
+  var mapImagesBGColors = {
+    "img1.jpg":LibColors.lightSkin,
+    "img2.jpg":LibColors.lightRed
   };
 
   var mapImagesColors = {
-    "img1.jpg":LibColors.lightSkin,
-    "img2.jpg":LibColors.lightRed
+    "img1.jpg":Colors.white,
+    "img2.jpg":Colors.white
   };
 
   Future<String> getStringFromLocalStorage(String key) async {
@@ -61,17 +68,17 @@ class _WelcomePageState extends State<WelcomePage> {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(top: 150),
-                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 10),
                         decoration: BoxDecoration(
-                          color: mapImagesColors.values.elementAt(index),
+                          color: mapImagesBGColors.values.elementAt(index),
                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomRight: Radius.circular(20))
                         ),
                         child: Text(
-                          mapImagesTitles.values.elementAt(index),
+                          index==0?AppLocalizations.of(context)!.welcometitle1:AppLocalizations.of(context)!.welcometitle2,
                           style:TextStyle(
-                              backgroundColor: mapImagesColors.values.elementAt(index),
-                              color: Colors.white,
-                              fontSize: 28,
+                              backgroundColor: mapImagesBGColors.values.elementAt(index),
+                              color: mapImagesColors.values.elementAt(index),
+                              fontSize: 35,
                               fontWeight: FontWeight.bold
                           ),
                         ),

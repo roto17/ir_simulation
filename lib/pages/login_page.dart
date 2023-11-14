@@ -161,10 +161,10 @@ class _LoginPageState extends State<LoginPage> {
                 color : Colors.blue,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 30),
-
+              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 30),
+              margin: const EdgeInsets.only(bottom: 20),
               child: Text(
-                AppLocalizations.of(context)!.hello,
+                AppLocalizations.of(context)!.loginTitle,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 30,
@@ -334,6 +334,15 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
+            Container(
+              width: 300,
+              margin: EdgeInsets.only(top: 10),
+              child: Column(
+                children: [
+                  Text(AppLocalizations.of(context)!.loginMSG),
+                ],
+              ),
+            )
 
             /*IconButton(
                 color: Colors.red,
