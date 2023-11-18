@@ -1,5 +1,5 @@
 import 'package:ir_simulation/models/attribute.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SimulationIr{
 
   static double nbrKids = 0;
@@ -13,10 +13,11 @@ class SimulationIr{
   static double netSalary = 0;
 
   static var attributeList = <String,Attribute>{
+
     'nbrKids'             :  Attribute(name: 'Nombre des enfants', value: 0,isPercentage: false),
-    'baseSalary'          :  Attribute(name: 'Salaire de Base', value: 20027.9,isPercentage: false),
-    'indemTransport'      :  Attribute(name: 'Indemnité de transport', value: 500,isPercentage: false),
-    'indemPanier'         :  Attribute(name: 'Indemnité de panier', value: 700,isPercentage: false),
+    'baseSalary'          :  Attribute(name: 'Salaire de Base', value: 0,isPercentage: false),
+    'indemTransport'      :  Attribute(name: 'Indemnité de transport', value: 0,isPercentage: false),
+    'indemPanier'         :  Attribute(name: 'Indemnité de panier', value: 0,isPercentage: false),
     'indemFonction'       :  Attribute(name: 'Indemnité de fonction', value: 0,isPercentage: false),
     'retenuesCNSS'        :  Attribute(name: "Retenues CNSS part salariale", value: 4.48, isPercentage: true,isLockedEditing: true),
     'retenuesAMO'         :  Attribute(name: "Retenues AMO part salariale", value: 2.26, isPercentage: true,isLockedEditing: true),

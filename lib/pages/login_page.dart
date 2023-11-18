@@ -23,8 +23,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    //print(globals.sharedPreferences?.getString('email'));
-
     super.initState();
   }
 
@@ -40,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
     redirectUrl: LibData.redirectUrlGit,
     title: LibData.titleGit,
     centerTitle: LibData.centerTitleGit,
-    scope: 'user:email'
+    scope: LibData.scopeGit
   );
 
   User? user;
@@ -88,9 +86,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<UserCredential?> signInWithTwitter() async{
     final twitterLogin = TwitterLogin(
-        apiKey: 'Ln7Wp6jeJA0Af895PSlyMwjpu',
-        apiSecretKey: 'FhDDf7uibYviWXYOCJuyHkQFyTmZ5Q8XmmsC0m7QK4vfyYFFJf',
-        redirectURI: 'flutter-twitter-login://'
+        apiKey: LibData.apiKeyTwitter,
+        apiSecretKey: LibData.apiSecretKeyTwitter,
+        redirectURI: LibData.redirectURITwitter
     );
 
     final authResult = await twitterLogin.login();
@@ -147,6 +145,22 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
+  void showSnackBar(String? msg){
+
+    final snackBar = SnackBar(
+      //content: Text(AppLocalizations.of(context)!.loginErr),
+      content: Text("${msg}"),
+      action: SnackBarAction(
+        label: AppLocalizations.of(context)!.loginCloseSnackBar,
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,11 +169,34 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  width: 30,
+                  height: 30,
+                  decoration: const BoxDecoration(
+                      color: Colors.black45,
+                      shape: BoxShape.circle
+                  ),
+                  margin: const EdgeInsets.only(bottom: 20,left: 20),
+                  child: Column(
+                    children: [
+                      Tooltip(
+                        message: AppLocalizations.of(context)!.loginMSG,
+                        child: const Icon(Icons.info,color: Colors.white,size: 30,),
+                      ),
+                      // Text(AppLocalizations.of(context)!.loginMSG),
+                    ],
+                  ),
+                )
+              ],
+            ),
 
             Container(
               decoration :const BoxDecoration(
-                color : Colors.blue,
-                borderRadius: BorderRadius.all(Radius.circular(30)),
+                  color : Colors.blue,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20),bottomRight: Radius.circular(20))
               ),
               padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 30),
               margin: const EdgeInsets.only(bottom: 20),
@@ -167,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                 AppLocalizations.of(context)!.loginTitle,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 30,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold
                 ),
               ),
@@ -207,6 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                         usercred = await signInWithGoogle();
                       }catch(e){
                         print(e);
+                        showSnackBar(e.toString());
                         googleController.reset();
                       }
                       if(usercred!.user != null)
@@ -240,7 +278,7 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         usercred = await signInWithTwitter();
                       }catch(e){
-                        print(e);
+                        showSnackBar("");
                         twitterController.reset();
                       }
                       if(usercred!.user != null)
@@ -274,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         usercred = await signInWithGithub(context);
                       }catch(e){
-                        print(e);
+                        showSnackBar("");
                         gitController.reset();
                       }
                       if(usercred!.user != null)
@@ -334,15 +372,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            Container(
-              width: 300,
-              margin: EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  Text(AppLocalizations.of(context)!.loginMSG),
-                ],
-              ),
-            )
+
 
             /*IconButton(
                 color: Colors.red,

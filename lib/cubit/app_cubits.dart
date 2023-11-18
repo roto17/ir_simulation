@@ -17,11 +17,9 @@ class AppCubits extends Cubit<CubitStates>{
 
   void goToLogin(){
 
-    print('roto17');
-    print(globals.sharedPreferences!.getString('email') );
     emit(LoadingState());
 
-    if(globals.sharedPreferences!.getString('email') != ''){
+    if(globals.sharedPreferences!.getString( 'email' ) != '' && globals.sharedPreferences!.getString( 'email' ) != null && globals.sharedPreferences!.getString( 'email' ) != 'null' ){
       emit(MainState());
     }else{
       emit(LoginState());

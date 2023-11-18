@@ -1,7 +1,10 @@
 {
     "welcometitle1":"Simuler votre IR",
     "welcometitle2":"Tester c'est gratuit",
-     "loginTitle": "Authentification Sociale",
-     "loginMSG" :"Identifiez vous en utilisant un de vos comptes\nSi vous rencontrez un problème\nMerci de contacter zerouali.khalid2@gmail.com",
+    "loginTitle": "Authentification Sociale",
+    "loginMSG" :"Identifiez vous en utilisant un de vos comptes\nSi vous rencontrez un problème\nMerci de contacter zerouali.khalid2@gmail.com",
+    "loginErr" : "Vous n'êtes pas connecté,merci de vérifier avec le développeur",
+    "loginCloseSnackBar" : "Fermer",
+    "nbrKids" : "Nombre des enfants",
     "hello": "Bonjour cv ?"
  }

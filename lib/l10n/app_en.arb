@@ -1,7 +1,11 @@
 {
     "welcometitle1":"Simulate your IR",
     "welcometitle2":"Try it it's free",
-     "loginTitle": "Social Login",
-     "loginMSG" :"Identify yourself using one of your accounts\nIf you are facing any problem\nPlease contact zerouali.khalid2@gmail.com",
+    "loginTitle": "Social Login",
+    "loginMSG" :"Identify yourself using one of your accounts\nIf you are facing any problem\nPlease contact zerouali.khalid2@gmail.com",
+    "loginErr" : "Could not login check with the developer",
+    "loginCloseSnackBar" : "Close",
+    "nbrKids" : "Number of kids",
+
     "hello": "Hello, How are you?"
 }

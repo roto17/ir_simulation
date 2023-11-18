@@ -7,5 +7,10 @@ class LibData {
   static const String redirectUrlGit = 'https://ir-login-6f28c.firebaseapp.com/__/auth/handler';
   static const String titleGit = 'GitHub Sign In';
   static const bool centerTitleGit = true;
+  static const String scopeGit = 'user:email';
+
+  static const String apiKeyTwitter = 'Ln7Wp6jeJA0Af895PSlyMwjpu';
+  static const String apiSecretKeyTwitter = 'FhDDf7uibYviWXYOCJuyHkQFyTmZ5Q8XmmsC0m7QK4vfyYFFJf';
+  static const String redirectURITwitter = 'flutter-twitter-login://';
 
 }

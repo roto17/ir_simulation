@@ -1,4 +1,3 @@
-import 'bottom_sheet_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
 
@@ -40,9 +39,9 @@ class _IrFormState extends State<IrForm> {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 height: 85,
                 width: 300,
                 child: TextFormField(
@@ -52,7 +51,7 @@ class _IrFormState extends State<IrForm> {
                   },
                   validator: (value){
                     if(value!.isEmpty){
-                      return 'Can\'t be empty';
+                      return 'Une valeur requise';
                     }
                     return null;
                   },
@@ -73,9 +72,9 @@ class _IrFormState extends State<IrForm> {
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 height: 85,
                 width: 300,
                 child: TextFormField(
@@ -88,16 +87,22 @@ class _IrFormState extends State<IrForm> {
                       return 'Invalide comme nombre des enfants';
                     }
 
+
+
                     if (value.isEmpty){
                       return 'Can\'t be empty';
                     }
 
                     if ( RegExp(r'^(\d*\.)?\d+$').hasMatch(textUpdatedComma) == false ){
-                      return 'Enter a Valid number';
+                      return 'Entrer un nombre valide';
+                    }
+
+                    if(widget.keyMap == 'baseSalary' && double.parse(textUpdatedComma) <= 0 ){
+                      return 'Salaire doit être plus que 0 dh';
                     }
 
                     if (widget.switchIsPercentage == true && double.parse(textUpdatedComma)/100 > 1) {
-                      return 'Error Percentage should be between 0 and 100';
+                      return 'Pourcentage est entre 0 et 100';
                     }
 
                     return null;
@@ -118,28 +123,25 @@ class _IrFormState extends State<IrForm> {
                   ),
                 ),
               ),
-              /*BottomSheetSwitch(
-                switchValue: widget.switchIsPercentage!,
-                valueChanged: (value) {
-                  setState(() {
-                    widget.switchIsPercentage = value;
-                  });
-                },
-              )*/
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(top: 50),
+            margin: const EdgeInsets.only(top: 10,left: 30),
             child: Row(
+
               children: [
                 ElevatedButton(
-                  child: const Text('Save'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Background color
+                    foregroundColor: Colors.white, // Text Color (Foreground color)
+                  ),
+                  child: const Text('Enregistrer'),
                   onPressed: () {
                     if( widget.form.currentState!.validate() ){
 
                       var attributeToUpdate = SimulationIr.attributeList[ widget.keyMap ];
                       attributeToUpdate!.name = widget.detentionDescTextBox.text;
-                      attributeToUpdate!.value = double.parse(widget.detentionValueTextBox.text);
+                      attributeToUpdate.value = double.parse(widget.detentionValueTextBox.text);
                       widget.updateAttribute(attributeToUpdate,widget.keyMap);
                       widget.updateSimulation();
                       Navigator.pop(context);
@@ -147,9 +149,13 @@ class _IrFormState extends State<IrForm> {
 
                     }
                   },
-                ),const SizedBox(width: 20,),
+                ),const SizedBox(width: 10,),
                 ElevatedButton(
-                  child: const Text('Close'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: Colors.white,
+                  ),
+                  child: const Text('X'),
                   onPressed: (){
                     Navigator.pop(context);
                   },
