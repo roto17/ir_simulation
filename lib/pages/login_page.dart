@@ -145,11 +145,10 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
-  void showSnackBar(String? msg){
+  void showSnackBar(){
 
     final snackBar = SnackBar(
-      //content: Text(AppLocalizations.of(context)!.loginErr),
-      content: Text("${msg}"),
+      content: Text(AppLocalizations.of(context)!.loginErr),
       action: SnackBarAction(
         label: AppLocalizations.of(context)!.loginCloseSnackBar,
         onPressed: () {
@@ -243,8 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         usercred = await signInWithGoogle();
                       }catch(e){
-                        print(e);
-                        showSnackBar(e.toString());
+                        showSnackBar();
                         googleController.reset();
                       }
                       if(usercred!.user != null)
@@ -278,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         usercred = await signInWithTwitter();
                       }catch(e){
-                        showSnackBar("");
+                        showSnackBar();
                         twitterController.reset();
                       }
                       if(usercred!.user != null)
@@ -312,7 +310,7 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         usercred = await signInWithGithub(context);
                       }catch(e){
-                        showSnackBar("");
+                        showSnackBar();
                         gitController.reset();
                       }
                       if(usercred!.user != null)
