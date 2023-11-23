@@ -6,6 +6,8 @@
     "loginErr" : "Could not login check with the developer",
     "loginCloseSnackBar" : "Close",
     "nbrKids" : "Number of kids",
-
-    "hello": "Hello, How are you?"
+    "hello": "Hello",
+    "home" : "Home",
+    "instructions" : "Instructions",
+    "credits" : "Credits"
 }

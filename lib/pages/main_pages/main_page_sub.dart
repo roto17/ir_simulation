@@ -17,6 +17,7 @@ class MainPageSub extends StatefulWidget {
 
 class _MainPageSubState extends State<MainPageSub> {
 
+
   var   _switchIsPercentage ;
   final detentionDescTextBox = TextEditingController();
   final detentionValueTextBox = TextEditingController();
@@ -185,6 +186,8 @@ class _MainPageSubState extends State<MainPageSub> {
 
   @override
   Widget build(BuildContext context) {
+    String myLocale = Localizations.localeOf(context).toString();
+    print(myLocale);
     return Container(
       color: LibColors.lighGrey,
       child: Column(
@@ -211,7 +214,8 @@ class _MainPageSubState extends State<MainPageSub> {
                         children: [
                           Row(
                             children: [
-                              Text("${SimulationIr.attributeList[attributeListKeys[index]]?.name} : "),
+
+                              Text("${ myLocale == 'fr' ? SimulationIr.attributeList[attributeListKeys[index]]?.name:SimulationIr.attributeList[attributeListKeys[index]]?.nameEN} : "),
                               index == 0? Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(0)}"):
                               SimulationIr.attributeList[attributeListKeys[index]]?.isPercentage == false?
                               Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):

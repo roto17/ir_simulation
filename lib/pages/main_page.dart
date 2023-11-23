@@ -9,6 +9,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:ir_simulation/pages/main_pages/credits_page.dart';
 import 'package:ir_simulation/pages/main_pages/main_page_sub.dart';
 import 'package:ir_simulation/pages/main_pages/instruction_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -64,7 +65,7 @@ class _MainPageState extends State<MainPage> {
             },
           )
         ],
-        title:  Text("Bonjour ${globals.sharedPreferences!.getString('email')}",style: const TextStyle(color: Colors.white,fontSize: 15),),
+        title:  Text("${AppLocalizations.of(context)!.hello} ${globals.sharedPreferences!.getString('email')}",style: const TextStyle(color: Colors.white,fontSize: 15),),
         backgroundColor: Colors.blue,
       ),
       body: pages[currentIndex],
@@ -80,10 +81,10 @@ class _MainPageState extends State<MainPage> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           elevation: 0,
-          items: const [
-            BottomNavigationBarItem(label: "Home",tooltip: "HOME",icon: Icon(FontAwesomeIcons.house)),
-            BottomNavigationBarItem(label: "Instructions",tooltip: "Instructions",icon: Icon(FontAwesomeIcons.compass)),
-            BottomNavigationBarItem(label: "Crédits",tooltip: "Crédits",icon: Icon(FontAwesomeIcons.copyright)),
+          items: [
+            BottomNavigationBarItem(label: AppLocalizations.of(context)!.home,tooltip: AppLocalizations.of(context)!.home,icon: const Icon(FontAwesomeIcons.house)),
+            BottomNavigationBarItem(label: AppLocalizations.of(context)!.instructions,tooltip: AppLocalizations.of(context)!.instructions,icon: const Icon(FontAwesomeIcons.compass)),
+            BottomNavigationBarItem(label: AppLocalizations.of(context)!.credits,tooltip: AppLocalizations.of(context)!.credits,icon: const Icon(FontAwesomeIcons.copyright)),
           ],
         )
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

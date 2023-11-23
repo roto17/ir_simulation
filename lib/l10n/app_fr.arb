@@ -6,5 +6,8 @@
     "loginErr" : "Vous n'êtes pas connecté,merci de vérifier avec le développeur",
     "loginCloseSnackBar" : "Fermer",
     "nbrKids" : "Nombre des enfants",
-    "hello": "Bonjour cv ?"
+    "hello": "Bonjour",
+    "home" : "Accueil",
+    "instructions" : "Instructions",
+     "credits" : "Crédits"
  }

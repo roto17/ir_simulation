@@ -7,6 +7,7 @@ import 'package:ir_simulation/cubit/app_cubit_logics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ir_simulation/pages/globals.dart' as globals;
+import 'package:ir_simulation/pages/main_page.dart';
 
 Future<void> main() async{
 
@@ -31,10 +32,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      //supportedLocales: AppLocalizations.supportedLocales,
-        supportedLocales: const [
+      supportedLocales: AppLocalizations.supportedLocales,
+        /*supportedLocales: const [
           Locale('fr'),
-        ],
+        ],*/
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -55,8 +56,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      home: BlocProvider<AppCubits>(create:(context)=> AppCubits(),child: const AppCubitLogics(),),
-     // home: MainPage(),
+      //home: BlocProvider<AppCubits>(create:(context)=> AppCubits(),child: const AppCubitLogics(),),
+     home: MainPage(),
     );
   }
 }
