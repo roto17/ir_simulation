@@ -56,8 +56,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      //home: BlocProvider<AppCubits>(create:(context)=> AppCubits(),child: const AppCubitLogics(),),
-     home: MainPage(),
+      home: BlocProvider<AppCubits>(create:(context)=> AppCubits(),child: const AppCubitLogics(),),
     );
   }
 }

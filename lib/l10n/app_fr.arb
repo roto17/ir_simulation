@@ -9,5 +9,14 @@
     "hello": "Bonjour",
     "home" : "Accueil",
     "instructions" : "Instructions",
-     "credits" : "Crédits"
+    "credits" : "Crédits",
+    "instructionsPageTitle" : "Instructions",
+    "instructionsPageRule1" : "Salaire de base est > à 0",
+    "instructionsPageRule2" : "Si vous constatez que vous n'avez pas un attribut sur votre Bulletin de paie,merci de renseigner 0 comme valeur",
+    "instructionsPageRule3" : "Les Frais professionnels sont caluclés selon votre salaire de base",
+    "instructionsPageRule4" : "Si vous avez des questions merci de contacter zerouali.khalid2@gmail.com",
+    "creditPageTitle" : "Crédits",
+    "creditPageDash1" : "Logique et Formule : Zakariae Bouhaji",
+    "creditPageDash2" : "Dev et Design : Khalid Zerouali"
+
  }

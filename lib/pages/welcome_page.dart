@@ -68,7 +68,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(top: 150),
-                        padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 4),
                         decoration: BoxDecoration(
                           color: mapImagesBGColors.values.elementAt(index),
                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomRight: Radius.circular(20))
@@ -78,7 +78,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           style:TextStyle(
                               backgroundColor: mapImagesBGColors.values.elementAt(index),
                               color: mapImagesColors.values.elementAt(index),
-                              fontSize: 35,
+                              fontSize: 30,
                               fontWeight: FontWeight.bold
                           ),
                         ),
@@ -95,7 +95,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                 color: LibColors.lightRed,
                               ),
                               child: IconButton(
-                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
                                 highlightColor: LibColors.darkRed,
                                 icon: const Icon(Icons.navigate_next_rounded,size: 30,),
                                 color: Colors.white,

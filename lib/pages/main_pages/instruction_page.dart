@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/material.dart';
 
@@ -33,23 +33,23 @@ class InstructionPage extends StatelessWidget {
                 children: [
                   Container(
                     width: double.maxFinite,
-                    child: const Text( "Instructions :",style: TextStyle(fontSize: 25),),
+                    child: Text( "${AppLocalizations.of(context)!.instructionsPageTitle} :",style: TextStyle(fontSize: 25),),
                   ),
                   Container(
                     width: double.maxFinite,
-                    child: const Text( "1) - Salaire de base est > à 0."),
+                    child: Text( "1) - ${AppLocalizations.of(context)!.instructionsPageRule1}."),
                   ),
                   Container(
                     width: double.maxFinite,
-                    child: const Text( "2) - Si vous constatez que vous avez pas un attribut sur votre Bultein de paie,merci de renseigner 0 comme valeur."),
+                    child: Text( "2) - ${AppLocalizations.of(context)!.instructionsPageRule2}."),
                   ),
                   Container(
                     width: double.maxFinite,
-                    child: const Text( "3) - Les Frais professionnels sont caluclés selon votre salaire de base."),
+                    child: Text( "3) - ${AppLocalizations.of(context)!.instructionsPageRule3}."),
                   ),
                   Container(
                     width: double.maxFinite,
-                    child: const Text( "4) - Si vous avez des questions merci de contacter zerouali.khalid2@gmail.com"),
+                    child: Text( "4) - ${AppLocalizations.of(context)!.instructionsPageRule4}"),
                   )
                 ],
               ),

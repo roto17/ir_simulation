@@ -9,5 +9,13 @@
     "hello": "Hello",
     "home" : "Home",
     "instructions" : "Instructions",
-    "credits" : "Credits"
+    "credits" : "Credits",
+    "instructionsPageTitle" : "Instructions",
+    "instructionsPageRule1" : "Base Salary > than 0",
+    "instructionsPageRule2" : "If you noticed that you don't have an attribute on your payslip ,please put 0 as a value for it",
+    "instructionsPageRule3" : "Professional fees are calculated based on your base salary",
+    "instructionsPageRule4" : "If you have any question please reach out to zerouali.khalid2@gmail.com",
+    "creditPageTitle" : "Credits",
+    "creditPageDash1" : "Logic & Formula : Zakariae Bouhaji",
+    "creditPageDash2" : "Dev & Design : Khalid Zerouali"
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../misc/lib_colors.dart';
 
 class CreditsPage extends StatelessWidget {
@@ -32,15 +34,15 @@ class CreditsPage extends StatelessWidget {
                     children: [
                       Container(
                         width: double.maxFinite,
-                        child: const Text( "Crédits :",style: TextStyle(fontSize: 25),),
+                        child: Text( "${AppLocalizations.of(context)!.creditPageTitle} :",style: TextStyle(fontSize: 25),),
                       ),
                       Container(
                         width: double.maxFinite,
-                        child: const Text( "- Logique et Formule : Zakariae Bouhaji"),
+                        child: Text( "- ${AppLocalizations.of(context)!.creditPageDash1}"),
                       ),
                       Container(
                         width: double.maxFinite,
-                        child: const Text( "- Dev et Design : Khalid Zerouali"),
+                        child: Text( "- ${AppLocalizations.of(context)!.creditPageDash2}"),
                       ),
                     ],
                   ),
