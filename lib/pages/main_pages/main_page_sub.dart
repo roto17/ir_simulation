@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ir_simulation/cubit/app_cubit_states.dart';
+import 'package:ir_simulation/cubit/app_cubits.dart';
 
 import '../../misc/lib_colors.dart';
 import '../../models/attribute.dart';
@@ -21,15 +24,15 @@ class _MainPageSubState extends State<MainPageSub> {
   var   _switchIsPercentage ;
   final detentionDescTextBox = TextEditingController();
   final detentionValueTextBox = TextEditingController();
-
-  var attributeListKeys = SimulationIr.attributeList.keys.toList();
+  var listAttribute;
+  var attributeListKeys;
 
   final _form = GlobalKey<FormState>();
 
   void _updateAttribute(Attribute attr,String keyMap){
     setState(() {
-      SimulationIr.attributeList[keyMap]!.value = attr.value;
-      SimulationIr.attributeList[keyMap]!.name = attr.name;
+      listAttribute[keyMap]!.value = attr.value;
+      listAttribute[keyMap]!.name = attr.name;
     });
   }
 
@@ -37,12 +40,12 @@ class _MainPageSubState extends State<MainPageSub> {
 
     setState(() {
       if(keyMap == 'nbrKids'){
-        detentionValueTextBox.text = SimulationIr.attributeList[keyMap]!.value.toStringAsFixed(0);
+        detentionValueTextBox.text = listAttribute[keyMap]!.value.toStringAsFixed(0);
       }else{
-        detentionValueTextBox.text = SimulationIr.attributeList[keyMap]!.value.toStringAsFixed(2);
+        detentionValueTextBox.text = listAttribute[keyMap]!.value.toStringAsFixed(2);
       }
-      detentionDescTextBox.text = SimulationIr.attributeList[keyMap]!.name;
-      _switchIsPercentage = SimulationIr.attributeList[keyMap]!.isPercentage;
+      detentionDescTextBox.text = listAttribute[keyMap]!.name;
+      _switchIsPercentage = listAttribute[keyMap]!.isPercentage;
     });
 
   }
@@ -51,31 +54,31 @@ class _MainPageSubState extends State<MainPageSub> {
 
     setState(() {
 
-      SimulationIr.imposables = SimulationIr.attributeList['baseSalary']!.value + SimulationIr.attributeList['indemFonction']!.value;
-      SimulationIr.brute = SimulationIr.imposables + SimulationIr.attributeList['indemTransport']!.value + SimulationIr.attributeList['indemPanier']!.value;
+      SimulationIr.imposables = listAttribute['baseSalary']!.value + listAttribute['indemFonction']!.value;
+      SimulationIr.brute = SimulationIr.imposables + listAttribute['indemTransport']!.value + listAttribute['indemPanier']!.value;
 
       if( SimulationIr.imposables * 12 > 78000 ){
-        SimulationIr.attributeList['fraisProfessionnels']!.value = 25;
+        listAttribute['fraisProfessionnels']!.value = 25;
       }else{
-        SimulationIr.attributeList['fraisProfessionnels']!.value = 35;
+        listAttribute['fraisProfessionnels']!.value = 35;
       }
 
       double amountvProFees = 0;
 
-      if( SimulationIr.attributeList['fraisProfessionnels']!.value == 25 ){
+      if( listAttribute['fraisProfessionnels']!.value == 25 ){
 
-        if( (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables >= 35000/12 ){
+        if( (listAttribute['fraisProfessionnels']!.value/100)*SimulationIr.imposables >= 35000/12 ){
           amountvProFees = 35000/12;
         }else{
-          amountvProFees = (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables;
+          amountvProFees = (listAttribute['fraisProfessionnels']!.value/100)*SimulationIr.imposables;
         }
 
       }else{
 
-        if( (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables >= 30000/12 ){
+        if( (listAttribute['fraisProfessionnels']!.value/100)*SimulationIr.imposables >= 30000/12 ){
           amountvProFees = 30000/12;
         }else{
-          amountvProFees = (SimulationIr.attributeList['fraisProfessionnels']!.value/100)*SimulationIr.imposables;
+          amountvProFees = (listAttribute['fraisProfessionnels']!.value/100)*SimulationIr.imposables;
         }
 
       }
@@ -87,7 +90,7 @@ class _MainPageSubState extends State<MainPageSub> {
         adjustedAmountForCnss = SimulationIr.imposables;
       }
 
-      SimulationIr.sNI = SimulationIr.imposables - ( adjustedAmountForCnss * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100)) + SimulationIr.imposables * (SimulationIr.attributeList['cimr']!.value/100) + amountvProFees);
+      SimulationIr.sNI = SimulationIr.imposables - ( adjustedAmountForCnss * (listAttribute['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (listAttribute['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (listAttribute['retenuesMutuelle']!.value/100)) + SimulationIr.imposables * (listAttribute['cimr']!.value/100) + amountvProFees);
 
       double tauxImpot = 0;
       double deduction = 0;
@@ -118,10 +121,10 @@ class _MainPageSubState extends State<MainPageSub> {
       SimulationIr.IRBrute =  SimulationIr.sNI * (tauxImpot/100) - deduction;
       SimulationIr.IRNet = 0;
       if( SimulationIr.IRBrute > 0 ) {
-        SimulationIr.IRNet =  SimulationIr.IRBrute-(30*SimulationIr.attributeList['nbrKids']!.value);
+        SimulationIr.IRNet =  SimulationIr.IRBrute-(30*listAttribute['nbrKids']!.value);
       }
 
-      SimulationIr.netSalary = SimulationIr.brute - ( ( adjustedAmountForCnss * (SimulationIr.attributeList['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (SimulationIr.attributeList['retenuesMutuelle']!.value/100))) + SimulationIr.IRNet);
+      SimulationIr.netSalary = SimulationIr.brute - ( ( adjustedAmountForCnss * (listAttribute['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (listAttribute['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (listAttribute['retenuesMutuelle']!.value/100))) + SimulationIr.IRNet);
 
     });
 
@@ -187,85 +190,95 @@ class _MainPageSubState extends State<MainPageSub> {
   @override
   Widget build(BuildContext context) {
     String myLocale = Localizations.localeOf(context).toString();
-    print(myLocale);
-    return Container(
-      color: LibColors.lighGrey,
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 20,right: 10,left: 10,bottom: 80),
-              children:
-              List.generate((SimulationIr.attributeList.length), (index){
-                return Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(14)),
-                          color: Colors.white,
-                          border: Border.all(color: LibColors.darkGrey)
-                      ),
-                      margin: const EdgeInsets.only(bottom: 6),
-                      padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<AppCubits,CubitStates>(
+      builder: (context,state){
+        if (state is MainState){
+          listAttribute = state.attributeList;
+          attributeListKeys = listAttribute.keys.toList();
+          return Container(
+            color: LibColors.lighGrey,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(top: 20,right: 10,left: 10,bottom: 80),
+                    children:
+                    List.generate((listAttribute.length), (index){
+                      return Column(
                         children: [
-                          Row(
-                            children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius.circular(14)),
+                                color: Colors.white,
+                                border: Border.all(color: LibColors.darkGrey)
+                            ),
+                            margin: const EdgeInsets.only(bottom: 6),
+                            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
 
-                              Text("${ myLocale == 'fr' ? SimulationIr.attributeList[attributeListKeys[index]]?.name:SimulationIr.attributeList[attributeListKeys[index]]?.nameEN} : "),
-                              index == 0? Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(0)}"):
-                              SimulationIr.attributeList[attributeListKeys[index]]?.isPercentage == false?
-                              Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):
-                              Text("${SimulationIr.attributeList[attributeListKeys[index]]?.value.toStringAsFixed(2)} %"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              SimulationIr.attributeList[attributeListKeys[index]]?.isLockedEditing == false? Container(
-                                width: 25,
-                                height: 25,
-                                margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(30)
+                                    Text("${ myLocale == 'fr' ? listAttribute[attributeListKeys[index]]?.name:listAttribute[attributeListKeys[index]]?.nameEN} : "),
+                                    index == 0? Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(0)}"):
+                                    listAttribute[attributeListKeys[index]]?.isPercentage == false?
+                                    Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):
+                                    Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(2)} %"),
+                                  ],
                                 ),
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  iconSize: 20,
-                                  onPressed: (){
-                                    showModel(method: 'update',keyMap: attributeListKeys[index]);
-                                  }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
+                                Row(
+                                  children: [
+                                    listAttribute[attributeListKeys[index]]?.isLockedEditing == false? Container(
+                                      width: 25,
+                                      height: 25,
+                                      margin: const EdgeInsets.only(left: 3,bottom: 3),
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius: BorderRadius.circular(30)
+                                      ),
+                                      child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        iconSize: 20,
+                                        onPressed: (){
+                                          showModel(method: 'update',keyMap: attributeListKeys[index]);
+                                        }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
+                                      ),
+                                    ):
+                                    Container(
+                                      width: 25,
+                                      height: 25,
+                                      margin: const EdgeInsets.only(left: 3,bottom: 3),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(30)
+                                      ),
+                                      child: const IconButton(
+                                        padding: EdgeInsets.zero,
+                                        iconSize: 20,
+                                        onPressed: null, icon:  Icon( Icons.edit,color: Colors.white,size: 15, ),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              ):
-                              Container(
-                                width: 25,
-                                height: 25,
-                                margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                child: const IconButton(
-                                  padding: EdgeInsets.zero,
-                                  iconSize: 20,
-                                  onPressed: null, icon:  Icon( Icons.edit,color: Colors.white,size: 15, ),
-                                ),
-                              )
-                            ],
+                              ],
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              }),
+                      );
+                    }),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        }else{
+          return Container();
+        }
+
+      },
     );
   }
 }

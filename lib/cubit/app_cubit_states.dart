@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ir_simulation/models/attribute.dart';
 abstract class CubitStates extends Equatable{}
 
 class InitialState extends CubitStates{
@@ -32,8 +33,10 @@ class LoginState extends CubitStates{
 }
 
 class MainState extends CubitStates{
+  MainState(this.attributeList);
+  final Map<String,Attribute> attributeList;
   @override
   // TODO: implement props
-  List<Object> get props => [];
+  List<Object> get props => [attributeList];
 
 }
