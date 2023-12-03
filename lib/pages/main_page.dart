@@ -87,7 +87,7 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(label: AppLocalizations.of(context)!.credits,tooltip: AppLocalizations.of(context)!.credits,icon: const Icon(FontAwesomeIcons.copyright)),
           ],
         )
-      //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
     );
   }
 }

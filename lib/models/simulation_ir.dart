@@ -17,6 +17,7 @@ class SimulationIr{
 
     'nbrKids'             :  Attribute(name: 'Nombre des enfants',nameEN : 'Number Of Kids', value: 0,isPercentage: false),
     'baseSalary'          :  Attribute(name: 'Salaire de Base',nameEN : 'Base Salary', value: 0,isPercentage: false),
+    'anciennete'          :  Attribute(name: "Ancienneté",nameEN :'Seniority', value: 0, isPercentage: true),
     'indemTransport'      :  Attribute(name: 'Indemnité de transport',nameEN : 'Transport Allowance', value: 0,isPercentage: false),
     'indemPanier'         :  Attribute(name: 'Indemnité de panier',nameEN : 'Meal Allowance', value: 0,isPercentage: false),
     'indemFonction'       :  Attribute(name: 'Indemnité de fonction',nameEN :'Employment Allowance', value: 0,isPercentage: false),

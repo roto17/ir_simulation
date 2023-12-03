@@ -1,15 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ir_simulation/cubit/app_cubit_states.dart';
-import 'package:ir_simulation/cubit/app_cubits.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../misc/lib_colors.dart';
-import '../../models/attribute.dart';
-import '../../models/simulation_ir.dart';
 import '../components/ir_form.dart';
+import '../../models/attribute.dart';
+import 'package:flutter/material.dart';
+import '../../models/simulation_ir.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ir_simulation/cubit/app_cubits.dart';
+import 'package:ir_simulation/cubit/app_cubit_states.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainPageSub extends StatefulWidget {
   const MainPageSub({super.key});
@@ -21,7 +20,7 @@ class MainPageSub extends StatefulWidget {
 class _MainPageSubState extends State<MainPageSub> {
 
 
-  var   _switchIsPercentage ;
+  var _switchIsPercentage ;
   final detentionDescTextBox = TextEditingController();
   final detentionValueTextBox = TextEditingController();
   var listAttribute;
@@ -32,7 +31,12 @@ class _MainPageSubState extends State<MainPageSub> {
   void _updateAttribute(Attribute attr,String keyMap){
     setState(() {
       listAttribute[keyMap]!.value = attr.value;
-      listAttribute[keyMap]!.name = attr.name;
+      if(Localizations.localeOf(context).toString() == 'fr'){
+        listAttribute[keyMap]!.name = attr.name;
+      }else{
+        listAttribute[keyMap]!.nameEN = attr.name;
+      }
+
     });
   }
 
@@ -44,8 +48,13 @@ class _MainPageSubState extends State<MainPageSub> {
       }else{
         detentionValueTextBox.text = listAttribute[keyMap]!.value.toStringAsFixed(2);
       }
-      detentionDescTextBox.text = listAttribute[keyMap]!.name;
+      if(Localizations.localeOf(context).toString() == 'fr'){
+        detentionDescTextBox.text = listAttribute[keyMap]!.name;
+      }else{
+        detentionDescTextBox.text = listAttribute[keyMap]!.nameEN;
+      }
       _switchIsPercentage = listAttribute[keyMap]!.isPercentage;
+
     });
 
   }
@@ -54,13 +63,14 @@ class _MainPageSubState extends State<MainPageSub> {
 
     setState(() {
 
-      SimulationIr.imposables = listAttribute['baseSalary']!.value + listAttribute['indemFonction']!.value;
+      SimulationIr.imposables = listAttribute['baseSalary']!.value + listAttribute['indemFonction']!.value + listAttribute['anciennete']!.value/100*listAttribute['baseSalary']!.value ;
+
       SimulationIr.brute = SimulationIr.imposables + listAttribute['indemTransport']!.value + listAttribute['indemPanier']!.value;
 
       if( SimulationIr.imposables * 12 > 78000 ){
-        listAttribute['fraisProfessionnels']!.value = 25;
+        listAttribute['fraisProfessionnels']!.value = 25.0;
       }else{
-        listAttribute['fraisProfessionnels']!.value = 35;
+        listAttribute['fraisProfessionnels']!.value = 35.0;
       }
 
       double amountvProFees = 0;
@@ -89,7 +99,7 @@ class _MainPageSubState extends State<MainPageSub> {
       }else{
         adjustedAmountForCnss = SimulationIr.imposables;
       }
-
+    
       SimulationIr.sNI = SimulationIr.imposables - ( adjustedAmountForCnss * (listAttribute['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (listAttribute['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (listAttribute['retenuesMutuelle']!.value/100)) + SimulationIr.imposables * (listAttribute['cimr']!.value/100) + amountvProFees);
 
       double tauxImpot = 0;
@@ -124,13 +134,16 @@ class _MainPageSubState extends State<MainPageSub> {
         SimulationIr.IRNet =  SimulationIr.IRBrute-(30*listAttribute['nbrKids']!.value);
       }
 
-      SimulationIr.netSalary = SimulationIr.brute - ( ( adjustedAmountForCnss * (listAttribute['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (listAttribute['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (listAttribute['retenuesMutuelle']!.value/100))) + SimulationIr.IRNet);
+      SimulationIr.netSalary = SimulationIr.brute - ( ( adjustedAmountForCnss * (listAttribute['retenuesCNSS']!.value/100) + (SimulationIr.imposables * (listAttribute['retenuesAMO']!.value/100)) + (SimulationIr.imposables * (listAttribute['retenuesMutuelle']!.value/100)) + (SimulationIr.imposables * (listAttribute['cimr']!.value/100)) ) + SimulationIr.IRNet);
 
     });
 
   }
 
   showModel({required String method,String? keyMap}){
+
+    _loadDetentionForUpdate(keyMap!);
+
     return showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
@@ -173,7 +186,7 @@ class _MainPageSubState extends State<MainPageSub> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Fermer'),
+              child: Text(AppLocalizations.of(context)!.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -184,9 +197,6 @@ class _MainPageSubState extends State<MainPageSub> {
     );
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     String myLocale = Localizations.localeOf(context).toString();
@@ -195,88 +205,100 @@ class _MainPageSubState extends State<MainPageSub> {
         if (state is MainState){
           listAttribute = state.attributeList;
           attributeListKeys = listAttribute.keys.toList();
-          return Container(
-            color: LibColors.lighGrey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 20,right: 10,left: 10,bottom: 80),
-                    children:
-                    List.generate((listAttribute.length), (index){
-                      return Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(Radius.circular(14)),
-                                color: Colors.white,
-                                border: Border.all(color: LibColors.darkGrey)
-                            ),
-                            margin: const EdgeInsets.only(bottom: 6),
-                            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
+          return Scaffold(
 
-                                    Text("${ myLocale == 'fr' ? listAttribute[attributeListKeys[index]]?.name:listAttribute[attributeListKeys[index]]?.nameEN} : "),
-                                    index == 0? Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(0)}"):
-                                    listAttribute[attributeListKeys[index]]?.isPercentage == false?
-                                    Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):
-                                    Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(2)} %"),
-                                  ],
+              body: Container(
+                color: LibColors.lighGrey,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 20,right: 10,left: 10,bottom: 80),
+                        children:
+                        List.generate((listAttribute.length), (index){
+                          return Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(Radius.circular(14)),
+                                    color: Colors.white,
+                                    border: Border.all(color: LibColors.darkGrey)
                                 ),
-                                Row(
+                                margin: const EdgeInsets.only(bottom: 6),
+                                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    listAttribute[attributeListKeys[index]]?.isLockedEditing == false? Container(
-                                      width: 25,
-                                      height: 25,
-                                      margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                      decoration: BoxDecoration(
-                                          color: Colors.blue,
-                                          borderRadius: BorderRadius.circular(30)
-                                      ),
-                                      child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        iconSize: 20,
-                                        onPressed: (){
-                                          showModel(method: 'update',keyMap: attributeListKeys[index]);
-                                        }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
-                                      ),
-                                    ):
-                                    Container(
-                                      width: 25,
-                                      height: 25,
-                                      margin: const EdgeInsets.only(left: 3,bottom: 3),
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(30)
-                                      ),
-                                      child: const IconButton(
-                                        padding: EdgeInsets.zero,
-                                        iconSize: 20,
-                                        onPressed: null, icon:  Icon( Icons.edit,color: Colors.white,size: 15, ),
-                                      ),
-                                    )
+                                    Row(
+                                      children: [
+                                        Text("${ myLocale == 'fr' ? listAttribute[attributeListKeys[index]]?.name:listAttribute[attributeListKeys[index]]?.nameEN} : "),
+                                        index == 0? Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(0)}"):
+                                        listAttribute[attributeListKeys[index]]?.isPercentage == false?
+                                        Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(2)} DH"):
+                                        Text("${listAttribute[attributeListKeys[index]]?.value.toStringAsFixed(2)} %"),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        listAttribute[attributeListKeys[index]]?.isLockedEditing == false? Container(
+                                          width: 25,
+                                          height: 25,
+                                          margin: const EdgeInsets.only(left: 3,bottom: 3),
+                                          decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius: BorderRadius.circular(30)
+                                          ),
+                                          child: IconButton(
+                                            padding: EdgeInsets.zero,
+                                            iconSize: 20,
+                                            onPressed: (){
+                                              showModel(method: 'update',keyMap: attributeListKeys[index]);
+                                            }, icon: const Icon( Icons.edit,color: Colors.white,size: 15, ),
+                                          ),
+                                        ):
+                                        Container(
+                                          width: 25,
+                                          height: 25,
+                                          margin: const EdgeInsets.only(left: 3,bottom: 3),
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey,
+                                              borderRadius: BorderRadius.circular(30)
+                                          ),
+                                          child: const IconButton(
+                                            padding: EdgeInsets.zero,
+                                            iconSize: 20,
+                                            onPressed: null, icon:  Icon( Icons.edit,color: Colors.white,size: 15, ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
+              ),
+              floatingActionButton: FloatingActionButton(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+                onPressed: (){
+                  _showMyDialog();
+                },
+                child: const Icon(FontAwesomeIcons.calculator),
+              ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            );
         }else{
           return Container();
         }
+
 
       },
     );

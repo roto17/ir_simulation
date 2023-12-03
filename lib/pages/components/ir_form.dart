@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ir_simulation/models/simulation_ir.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 //ignore: must_be_immutable
 class IrForm extends StatefulWidget {
@@ -87,8 +88,6 @@ class _IrFormState extends State<IrForm> {
                       return 'Invalide comme nombre des enfants';
                     }
 
-
-
                     if (value.isEmpty){
                       return 'Can\'t be empty';
                     }
@@ -135,17 +134,20 @@ class _IrFormState extends State<IrForm> {
                     backgroundColor: Colors.blue, // Background color
                     foregroundColor: Colors.white, // Text Color (Foreground color)
                   ),
-                  child: const Text('Enregistrer'),
+                  child: Text(AppLocalizations.of(context)!.save),
                   onPressed: () {
                     if( widget.form.currentState!.validate() ){
 
                       var attributeToUpdate = SimulationIr.attributeList[ widget.keyMap ];
+
                       attributeToUpdate!.name = widget.detentionDescTextBox.text;
                       attributeToUpdate.value = double.parse(widget.detentionValueTextBox.text);
+
                       widget.updateAttribute(attributeToUpdate,widget.keyMap);
+
                       widget.updateSimulation();
                       Navigator.pop(context);
-                      widget.showDialog();
+                      //widget.showDialog();
 
                     }
                   },
