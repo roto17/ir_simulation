@@ -1,6 +1,14 @@
-#INTRODUCTION <br>
-IR Simulation is a mobile application built with Flutter, designed to ensure maximum compatibility across platforms.
+<h1>INTRODUCTION</h1>
 
-Its main objective is to help Moroccan employees in the private sector calculate their net salary and understand all related deductions. By simulating the tax system, the app provides a clearer view of how income tax is applied in Morocco.
+<p>
+<b>IR Simulation</b> is a mobile application built with <b>Flutter</b>, designed to ensure maximum compatibility across platforms.
+</p>
 
-Currently, the calculation rules are based on older Moroccan tax laws, but the logic will be updated soon to reflect the latest regulations.
+<p>
+Its main objective is to help <b>Moroccan employees in the private sector</b> calculate their <b>net salary</b> and understand all related <b>deductions</b>.  
+By simulating the tax system, the app provides a clearer view of how <b>income tax</b> is applied in Morocco.
+</p>
+
+<p>
+Currently, the calculation rules are based on <b>older Moroccan tax laws</b>, but the logic will be updated soon to reflect the latest regulations.
+</p>
